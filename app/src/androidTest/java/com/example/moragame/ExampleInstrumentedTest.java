@@ -5,6 +5,9 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.moragame.game.Computer;
+import com.example.moragame.game.Mora;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,4 +26,15 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.example.moragame", appContext.getPackageName());
     }
+
+    @Test
+    public void MoraTest(){
+
+        for(int i=0;i<10;i++)
+        System.out.println(Computer.getRandomMora());
+
+
+
+    }
+
 }
