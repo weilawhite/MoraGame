@@ -12,13 +12,15 @@ import android.widget.ImageView;
 import com.example.moragame.game.Computer;
 import com.example.moragame.game.Mora;
 import com.example.moragame.game.Player;
+import com.example.moragame.game.WinState;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Button startBtn, quitBtn;
     private ImageButton scissorBtn, paperBtn, rockBtn;
     private ImageView comImg;
     private final String TAG = "MainActivity";
-
+    Player player ;
+    Computer computer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        Player player = new Player();
-        Computer computer = new Computer();
+        player = new Player();
+        computer = new Computer();
         computer.AI();
         comImg.setImageResource(Mora.getMoraResId(computer.getMora()));
 
@@ -56,12 +58,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.paper_ibn:
                 Log.d(TAG, getResources().getString(R.string.paper));
+                player.setMora(Mora.PAPER);
+                Log.d(TAG,WinState.getWinState(player.getMora(),computer.getMora()).toString());
+                //System.out.println(WinState.getWinState(player.getMora(),computer.getMora()));
                 break;
             case R.id.scissors_ibn:
                 Log.d(TAG, getResources().getString(R.string.scissors));
+                player.setMora(Mora.SCISSOR);
+                Log.d(TAG,WinState.getWinState(player.getMora(),computer.getMora()).toString());
                 break;
             case R.id.rock_ibn:
                 Log.d(TAG, getResources().getString(R.string.rock));
+                player.setMora(Mora.ROCK);
+                Log.d(TAG,WinState.getWinState(player.getMora(),computer.getMora()).toString());
                 break;
             case R.id.start_btn:
                 Log.d(TAG, getResources().getString(R.string.start));

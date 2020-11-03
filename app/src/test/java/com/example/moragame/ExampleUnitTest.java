@@ -1,6 +1,8 @@
 package com.example.moragame;
 
 import com.example.moragame.game.Computer;
+import com.example.moragame.game.Mora;
+import com.example.moragame.game.WinState;
 
 import org.junit.Test;
 
@@ -18,12 +20,14 @@ public class ExampleUnitTest {
     }
 
 
+
+
     @Test
-    public void MoraTest(){
+    public void MoraTest() {
 
-        for(int i=0;i<10;i++)
-            System.out.println(Computer.getRandomMora());
-
+        System.out.println(WinState.getWinState(Mora.PAPER, Mora.PAPER));
+        System.out.println(WinState.getWinState(Mora.SCISSOR, Mora.PAPER));
+        System.out.println(WinState.getWinState(Mora.ROCK, Mora.PAPER));
 
 
     }
