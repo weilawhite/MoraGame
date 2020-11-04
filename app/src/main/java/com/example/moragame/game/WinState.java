@@ -23,6 +23,34 @@ public enum WinState {
 
     public static WinState getWinState(Mora player, Mora computer, Rule rule) {
         WinState result;
+        result = getWinState(player, computer);
+        if (rule == Rule.P_WIN || rule == Rule.C_LOSE) {
+            if (result == PLAYER_WIN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        if (rule == Rule.P_LOSE || rule == Rule.C_WIN) {
+            if (result == COMPUTER_WIN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        if (rule == Rule.EVEN) {
+            if (result == EVEN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        if (rule == Rule.NOT_EVEN) {
+            if (result != EVEN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        if (rule == Rule.NOT_WIN) {
+            if (result != PLAYER_WIN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        if (rule == Rule.NOT_LOSE) {
+            if (result != COMPUTER_WIN) return PLAYER_WIN;
+            return COMPUTER_WIN;
+        }
+        return EVEN;
+
+        /*
         if (rule == Rule.P_WIN||rule== Rule.C_LOSE) {
             if (player == Mora.SCISSOR && computer == Mora.PAPER) {
                 return PLAYER_WIN;
@@ -87,7 +115,7 @@ public enum WinState {
             }
             return PLAYER_WIN;
         }
-        return EVEN;
+        return EVEN;*/
     }
 
 }

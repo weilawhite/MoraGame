@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setRuleText() {
         Rule rule = computer.getRule();
+        //String ruleString = computer.getRuleString();
+        //ruleText.setText(getResources().);
         switch (rule) {
             case EVEN:
                 ruleText.setText(getResources().getString(R.string.EVEN));
@@ -96,19 +98,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, getResources().getString(R.string.paper));
                 player.setMora(Mora.PAPER);
                 //Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora()).toString());
-                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(),computer.getRule()).toString());
+                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
                 break;
             case R.id.scissors_ibn:
                 Log.d(TAG, getResources().getString(R.string.scissors));
                 player.setMora(Mora.SCISSOR);
                 //Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora()).toString());
-                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(),computer.getRule()).toString());
+                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
                 break;
             case R.id.rock_ibn:
                 Log.d(TAG, getResources().getString(R.string.rock));
                 player.setMora(Mora.ROCK);
                 //Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora()).toString());
-                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(),computer.getRule()).toString());
+                Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
                 break;
             case R.id.start_btn:
                 Log.d(TAG, getResources().getString(R.string.start));

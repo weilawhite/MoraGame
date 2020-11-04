@@ -8,6 +8,10 @@ public class Computer extends Player {
     public Rule getRule() {
         return rule;
     }
+    public String getRuleString() {
+
+        return rule.toString();
+    }
 
     public void setRule(Rule rule) {
         this.rule = rule;
