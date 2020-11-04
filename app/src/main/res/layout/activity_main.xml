@@ -53,8 +53,14 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_layout"
         android:layout_below="@+id/title_layout"
-        android:gravity="center">
-
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/rule_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="50sp"
+            android:text="" />
         <GridLayout
             android:id="@+id/grid_layout"
             android:layout_width="wrap_content"
@@ -73,7 +79,8 @@
                 android:layout_gravity="center"
                 android:elevation="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/scissors" />
+                android:src="@drawable/scissors"
+                android:contentDescription="TODO" />
 
             <ImageButton
                 android:id="@+id/rock_ibn"
@@ -96,6 +103,8 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/paper" />
         </GridLayout>
+
+
 
     </LinearLayout>
 </RelativeLayout>

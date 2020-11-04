@@ -15,4 +15,13 @@
     <string name="ok">確定</string>
     <string name="exit">是否離開?</string>
     <string name="cancel">取消</string>
+    <string name="P_WIN">請贏過我</string>
+    <string name="P_LOSE">請輸給我</string>
+    <string name="C_WIN">請讓我贏</string>
+    <string name="C_LOSE">請讓我輸</string>
+    <string name="EVEN">請跟我平手</string>
+    <string name="NOT_EVEN">請不要平手</string>
+    <string name="NOT_WIN">請不要贏我</string>
+    <string name="NOT_LOSE">請不要輸我</string>
+
 </resources>
