@@ -31,7 +31,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findView();
         //init();
-
+        //delay();
+        //3secCountdown();
+        //delay();
+        //com(); (rule)
+        //player();
+        //checkWin();
+        //lifeLost or combo
+        //back to delay
+        //com();
     }
 
     private void init() {
