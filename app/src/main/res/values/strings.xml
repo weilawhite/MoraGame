@@ -23,5 +23,6 @@
     <string name="NOT_EVEN">請不要平手</string>
     <string name="NOT_WIN">請不要贏我</string>
     <string name="NOT_LOSE">請不要輸我</string>
+    <string name="imrule">我是規則</string>
 
 </resources>

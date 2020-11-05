@@ -1,15 +1,25 @@
 package com.example.moragame.game;
 
+import android.util.Log;
+
+import com.example.moragame.GameState;
+import com.example.moragame.OnActionListener;
+
 import java.util.Random;
 
 public class Computer extends Player {
     Rule rule;
+    OnActionListener listener;
+
+    public Computer(OnActionListener listener) {
+        this.listener = listener;
+    }
 
     public Rule getRule() {
         return rule;
     }
-    public String getRuleString() {
 
+    public String getRuleString() {
         return rule.toString();
     }
 
@@ -18,8 +28,16 @@ public class Computer extends Player {
     }
 
     public void AI() {
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setMora(getRandomMora());
         setRule(getRandomRule());
+        Log.d("MainActivity","3");
+
+        listener.onAction(GameState.PLAYER_ROUND);
     }
 
     public static Mora getRandomMora() {

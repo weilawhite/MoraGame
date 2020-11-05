@@ -23,6 +23,9 @@ public enum WinState {
 
     public static WinState getWinState(Mora player, Mora computer, Rule rule) {
         WinState result;
+        if(player==Mora.NONE){
+            return COMPUTER_WIN;
+        }
         result = getWinState(player, computer);
         if (rule == Rule.P_WIN || rule == Rule.C_LOSE) {
             if (result == PLAYER_WIN) return PLAYER_WIN;
