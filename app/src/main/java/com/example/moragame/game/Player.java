@@ -3,6 +3,11 @@ package com.example.moragame.game;
 public class Player {
     private Mora mora;
     private int winCount,loseCount,life;
+    private final int INIT_LIFE=3;
+
+    public int getINIT_LIFE() {
+        return INIT_LIFE;
+    }
 
     public Player() {
         mora=Mora.NONE;

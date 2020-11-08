@@ -35,7 +35,7 @@ public class Computer extends Player {
         }
         setMora(getRandomMora());
         setRule(getRandomRule());
-        Log.d("MainActivity","3");
+        Log.d("MainActivity","AI");
 
         listener.onAction(GameState.PLAYER_ROUND);
     }
