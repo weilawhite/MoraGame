@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         targetMilliSecond = 1500;
         gameCountDownFinish = false;
         player.setLife(player.getINIT_LIFE());
-        //stageCount = 1;
+        stageCount = 1;
         stageText.setText(String.valueOf(stageCount));
         String life = String.format("HP:%d", player.getLife());
         lifeText.setText(life);
