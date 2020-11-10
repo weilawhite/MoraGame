@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Player player;
     Computer computer;
     GameState gameState;
-    private int stageCount = 1;
+    private int stageCount = 1, countSecond = 0;
     private int colorRandom = 1;
     private int round = 1;
     private int combo = 0, hitCombo = 0;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bigCounterText = findViewById(R.id.big_counter_text);
         bigCounterText.setVisibility(View.INVISIBLE);
         hitCountText = findViewById(R.id.hit_count_text);
-        //hitCountText.setVisibility(View.INVISIBLE);
+        hitCountText.setVisibility(View.INVISIBLE);
         hitCombotext = findViewById(R.id.hit_combo_text);
 
         startBtn.setOnClickListener(this);
@@ -81,6 +81,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case INIT_GAME:
                 Log.d(TAG, "INIT_GAME");
                 init();
+                bigCounterText.setText(String.valueOf(countSecond));
+                findViewById(R.id.grid_layout).setVisibility(View.INVISIBLE);
+                bigCounterText.setVisibility(View.VISIBLE);
+                gameTimer = new Handler(Looper.getMainLooper());
+                gameTimer.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        countSecond--;
+                        if (countSecond == 0) {
+                            gameTimer.removeCallbacks(this);
+                            findViewById(R.id.grid_layout).setVisibility(View.VISIBLE);
+                            bigCounterText.setVisibility(View.INVISIBLE);
+                            onAction(GameState.START_GAME);
+                            return;
+                        }
+                        bigCounterText.setText(String.valueOf(countSecond));
+                        gameTimer.post(this);
+                    }
+                });
                 break;
             case START_GAME:
                 Log.d(TAG, "START_GAME");
@@ -97,13 +121,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case CHECK_WIN_STATE:
                 Log.d(TAG, "Stage " + stageCount);
                 Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
+
                 if (WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()) == WinState.COMPUTER_WIN) {
                     Log.d(TAG, "LOSE LIFE:" + player.getLife() + "->" + (player.getLife() - 1));
+
                     player.setLife(player.getLife() - 1);
-                    String life = String.format("HP:%d", player.getLife());
-                    lifeText.setText(life);
-                    String heart = player.getLifeString();
-                    heartText.setText(heart);
+                    //String life = String.format("HP:%d", player.getLife());
+                    lifeText.setText(String.format("HP:%d", player.getLife()));
+                    //String heart = player.getLifeString();
+                    heartText.setText(player.getLifeString());
                     combo = 0;
 
 
@@ -114,9 +140,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     winCountText.setText(String.valueOf(player.getWinCount()));
                     stageText.setText(String.valueOf(stageCount));
                     combo++;
+                    hitCountText.setVisibility(View.VISIBLE);
+                    hitCountText.setText(combo + "連擊!");
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(800);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    hitCountText.setVisibility(View.INVISIBLE);
+                                }
+                            });
+                        }
+                    }).start();
+
                     if (combo > hitCombo) {
                         hitCombo = combo;
-                        hitCombotext.setText("hit combo:\n"+hitCombo);
+                        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
                     }
                 }
 
@@ -125,7 +171,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     gaming = false;
                     gameCountDownFinish = true;
                     ruleText.setText("遊戲結束");
-                    onAction(GameState.INIT_GAME);
+                    gameState = GameState.INIT_GAME;
+
+                    //onAction(GameState.INIT_GAME);
                 } else {
                     onAction(GameState.START_GAME);
                 }
@@ -152,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         computer = new Computer(this);
         gameState = GameState.INIT_GAME;
         stageCount = 1;
+        countSecond = 3;
         round = 1;
         combo = 0;
         player.setLife(player.getINIT_LIFE());
@@ -164,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameCountDownFinish = false;
 
         roundText.setText("ROUND: " + round++);
-        hitCountText.setText(combo + "連擊!");
+
         stageText.setText(String.valueOf(stageCount));
         winCountText.setText(String.valueOf(player.getWinCount()));
 
@@ -212,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!gaming) {
                     Log.d(TAG, getResources().getString(R.string.start));
                     gaming = true;
-                    onAction(GameState.START_GAME);
+                    onAction(GameState.INIT_GAME);
                 }
                 break;
             case R.id.quit_btn:
@@ -232,11 +281,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        gameMilliSecond = gameMilliSecond + 100;
+        gameMilliSecond = gameMilliSecond + 10;
         if (gameMilliSecond > targetMilliSecond) {
             gameMilliSecond = targetMilliSecond;
             gameCountDownFinish = true;
