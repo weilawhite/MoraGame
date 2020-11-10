@@ -8,6 +8,15 @@ public class Player {
     public int getINIT_LIFE() {
         return INIT_LIFE;
     }
+    public String getLifeString(){
+        String heart="";
+        for (int i=0;i<this.life;i++){
+            heart=heart+"♥";
+        }
+
+
+        return heart;
+    }
 
     public Player() {
         mora=Mora.NONE;

@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="me.app17.moragame.MainActivity">
 
     <FrameLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="240dp"
         android:background="@color/colorPrimaryDark">
 
         <ImageView
@@ -129,13 +128,13 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottom_layout"
         android:layout_below="@+id/title_layout"
-        android:gravity="center"
-        android:orientation="vertical">
+        >
+
         <GridLayout
             android:id="@+id/grid_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="center"
             android:columnCount="2"
             android:rowCount="2"
             android:useDefaultMargins="true">
@@ -150,8 +149,7 @@
                 android:layout_gravity="center"
                 android:elevation="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/scissors"
-                android:contentDescription="TODO" />
+                android:src="@drawable/scissors" />
 
             <ImageButton
                 android:id="@+id/rock_ibn"
@@ -174,34 +172,15 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/paper" />
         </GridLayout>
+
         <TextView
-            android:id="@+id/count_text"
+            android:id="@+id/counter_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/super_large_font_size"
             android:layout_marginLeft="8dp"
-            android:text="1.000" />
-        <TextView
-            android:id="@+id/rule_text"
-            android:layout_gravity="center|top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:text="@string/imrule" />
-        <TextView
-            android:id="@+id/life_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:textSize="40dp"
-            android:text="HP:  " />
-        <TextView
-            android:id="@+id/stage_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:textSize="40dp"
-            android:text="0" />
+            android:text="1:000"
+            android:textColor="#000000"
+            android:textSize="@dimen/super_large_font_size"/>
 
         <TextView
             android:id="@+id/big_counter_text"
@@ -213,12 +192,11 @@
             android:textStyle="italic"
             android:typeface="sans">
 
-
         </TextView>
 
 
         <TextView
-            android:id="@+id/heart_text"
+            android:id="@+id/hart_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -231,10 +209,5 @@
         </TextView>
 
 
-
-
-
     </FrameLayout>
-
-
 </RelativeLayout>

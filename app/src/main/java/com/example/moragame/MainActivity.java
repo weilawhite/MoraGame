@@ -22,19 +22,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startBtn, quitBtn;
     private ImageButton scissorBtn, paperBtn, rockBtn;
     private ImageView comImg;
-    protected TextView ruleText, countText, lifeText, stageText;
+    protected TextView ruleText, countText, lifeText, stageText, heartText, winCountText, bigCounterText, hitCountText, roundText, hitCombotext;
     private final String TAG = "MainActivity";
     Player player;
     Computer computer;
     GameState gameState;
-    int stageCount = 1;
-    int colorRandom = 1;
+    private int stageCount = 1;
+    private int colorRandom = 1;
+    private int round = 1;
+    private int combo = 0, hitCombo = 0;
+
     boolean gameOver = false;
     boolean gaming = false;
     private int gameMilliSecond;
     private int targetMilliSecond;
     boolean gameCountDownFinish;
     Handler gameTimer;
+
+    private void findView() {
+        startBtn = findViewById(R.id.start_btn);
+        quitBtn = findViewById(R.id.quit_btn);
+        scissorBtn = findViewById(R.id.scissors_ibn);
+        paperBtn = findViewById(R.id.paper_ibn);
+        rockBtn = findViewById(R.id.rock_ibn);
+        comImg = findViewById(R.id.computer_img);
+        lifeText = findViewById(R.id.life_text);
+        ruleText = findViewById(R.id.rule_text);
+        countText = findViewById(R.id.count_text);
+        stageText = findViewById(R.id.stage_text);
+        heartText = findViewById(R.id.heart_text);
+        winCountText = findViewById(R.id.win_count_text);
+        roundText = findViewById(R.id.round_text);
+
+        bigCounterText = findViewById(R.id.big_counter_text);
+        bigCounterText.setVisibility(View.INVISIBLE);
+        hitCountText = findViewById(R.id.hit_count_text);
+        //hitCountText.setVisibility(View.INVISIBLE);
+        hitCombotext = findViewById(R.id.hit_combo_text);
+
+        startBtn.setOnClickListener(this);
+        quitBtn.setOnClickListener(this);
+        scissorBtn.setOnClickListener(this);
+        paperBtn.setOnClickListener(this);
+        rockBtn.setOnClickListener(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (gameState) {
             case INIT_GAME:
                 Log.d(TAG, "INIT_GAME");
+                init();
                 break;
             case START_GAME:
                 Log.d(TAG, "START_GAME");
@@ -66,14 +98,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "Stage " + stageCount);
                 Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
                 if (WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()) == WinState.COMPUTER_WIN) {
-                    Log.d(TAG, "LOSE LIFE:"+player.getLife()+"->"+(player.getLife()-1));
+                    Log.d(TAG, "LOSE LIFE:" + player.getLife() + "->" + (player.getLife() - 1));
                     player.setLife(player.getLife() - 1);
                     String life = String.format("HP:%d", player.getLife());
                     lifeText.setText(life);
+                    String heart = player.getLifeString();
+                    heartText.setText(heart);
+                    combo = 0;
+
+
                 } else {
                     Log.d(TAG, "WIN");
                     stageCount++;
+                    player.setWinCount(player.getWinCount() + 1);
+                    winCountText.setText(String.valueOf(player.getWinCount()));
                     stageText.setText(String.valueOf(stageCount));
+                    combo++;
+                    if (combo > hitCombo) {
+                        hitCombo = combo;
+                        hitCombotext.setText("hit combo:\n"+hitCombo);
+                    }
                 }
 
                 if (player.getLife() <= 0) {
@@ -83,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ruleText.setText("遊戲結束");
                     onAction(GameState.INIT_GAME);
                 } else {
-                    onAction(GameState.COMPUTER_ROUND);
+                    onAction(GameState.START_GAME);
                 }
                 break;
         }
@@ -107,6 +151,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         player = new Player();
         computer = new Computer(this);
         gameState = GameState.INIT_GAME;
+        stageCount = 1;
+        round = 1;
+        combo = 0;
+        player.setLife(player.getINIT_LIFE());
     }
 
     private void startGame() {
@@ -114,11 +162,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameMilliSecond = 0;
         targetMilliSecond = 1500;
         gameCountDownFinish = false;
-        player.setLife(player.getINIT_LIFE());
-        stageCount = 1;
+
+        roundText.setText("ROUND: " + round++);
+        hitCountText.setText(combo + "連擊!");
         stageText.setText(String.valueOf(stageCount));
+        winCountText.setText(String.valueOf(player.getWinCount()));
+
+        //新的愛心血量
+        heartText.setText(player.getLifeString());
+
+        //舊的文字血量
         String life = String.format("HP:%d", player.getLife());
         lifeText.setText(life);
+
         gaming = true;
         if (gaming) {
             onAction(GameState.COMPUTER_ROUND);
@@ -240,21 +296,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void findView() {
-        startBtn = findViewById(R.id.start_btn);
-        quitBtn = findViewById(R.id.quit_btn);
-        scissorBtn = findViewById(R.id.scissors_ibn);
-        paperBtn = findViewById(R.id.paper_ibn);
-        rockBtn = findViewById(R.id.rock_ibn);
-        comImg = findViewById(R.id.computer_img);
-        lifeText = findViewById(R.id.life_text);
-        ruleText = findViewById(R.id.rule_text);
-        countText = findViewById(R.id.count_text);
-        stageText = findViewById(R.id.stage_text);
-        startBtn.setOnClickListener(this);
-        quitBtn.setOnClickListener(this);
-        scissorBtn.setOnClickListener(this);
-        paperBtn.setOnClickListener(this);
-        rockBtn.setOnClickListener(this);
-    }
 }

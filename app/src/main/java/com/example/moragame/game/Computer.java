@@ -29,7 +29,7 @@ public class Computer extends Player {
 
     public void AI() {
         try {
-            Thread.sleep(150);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
