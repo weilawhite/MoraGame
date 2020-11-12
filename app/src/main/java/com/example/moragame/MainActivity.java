@@ -4,7 +4,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,22 +43,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int[] soundResId;
     private final int SOUND_CORRECT = 0;
     private final int SOUND_WRONG = 1;
+    int topHitCombo=0;
 
     boolean gameOver = false;
     boolean gaming = false;
     private int gameMilliSecond;
+    private int beginMilliSecond=3000;
+    private int roundStep=2;
     private int targetMilliSecond;
     boolean gameCountDownFinish;
     Handler gameTimer;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void initSound(){
-        soundPool=new SoundPool.Builder().setMaxStreams(10).build();
-        soundResId=new int[]{soundPool.load(this,R.raw.correct_ogg,1),soundPool.load(this,R.raw.wrong,1)};
+    public void initSound() {
+        soundPool = new SoundPool.Builder().setMaxStreams(10).build();
+        soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1)};
     }
 
-    public void playSound(int id){
-        soundPool.play(soundResId[id],1,1,1,0,1);
+    public void playSound(int id) {
+        soundPool.play(soundResId[id], 1, 1, 1, 0, 1);
     }
 
     private void findView() {
@@ -79,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hitCountText = findViewById(R.id.hit_count_text);
         hitCountText.setVisibility(View.INVISIBLE);
         hitCombotext = findViewById(R.id.hit_combo_text);
-
+        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
         startBtn.setOnClickListener(this);
         quitBtn.setOnClickListener(this);
         scissorBtn.setOnClickListener(this);
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        load();
         findView();
         init();
         initSound();
@@ -142,8 +148,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case GAME_OVER:
                 StringBuilder sb = new StringBuilder();
-                sb.append("SCORE:" + player.getWinCount()).append("HIT COMBO:" + hitCombo);
+                sb.append("SCORE:" + player.getWinCount()).append("\nHIT COMBO:" + hitCombo);
                 gaming = false;
+                if(hitCombo>topHitCombo){
+                    topHitCombo=hitCombo;
+                    save();
+                }
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                 alertDialog.setTitle(R.string.result);
                 alertDialog.setMessage(sb.toString());
@@ -201,8 +211,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     if (combo > hitCombo) {
                         hitCombo = combo;
-                        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
-                    }
+                        //save();
+                        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));}
+
                 }
 
                 if (player.getLife() <= 0) {
@@ -210,6 +221,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     gaming = false;
                     gameCountDownFinish = true;
                     ruleText.setText("遊戲結束");
+                    if (combo > hitCombo) {
+                        hitCombo = combo;
+                        save();
+                        //hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
+                    }
                     gameState = GameState.GAME_OVER;
                     onAction(GameState.GAME_OVER);
 
@@ -219,6 +235,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    public void save() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Game", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("Combo",topHitCombo);
+        editor.commit();
+    }
+
+    public void load(){
+        SharedPreferences sharedPreferences=getSharedPreferences("Game",Context.MODE_PRIVATE);
+        topHitCombo=sharedPreferences.getInt("Combo",0);
+        hitCombo=topHitCombo;
     }
 
     @Override
@@ -239,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MainActivity.this.finish();
-                dialog.dismiss();
+                System.exit(0);
             }
         }).setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -279,8 +308,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startGame() {
 
         gameMilliSecond = 0;
-        targetMilliSecond = 1500;
+        //targetMilliSecond = 1500;
         gameCountDownFinish = false;
+
+        this.setTitle(getResources().getString(R.string.app_name)+" > "+targetMilliSecond);
 
         roundText.setText("ROUND: " + round++);
 
@@ -337,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.quit_btn:
                 if (gameOver = true) {
                     Log.d(TAG, getResources().getString(R.string.quit));
+                    showExitDialog();
                 }
                 break;
         }
@@ -349,12 +381,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, "T");
             return;
         }
-
+/*
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+ */
+        targetMilliSecond=beginMilliSecond-(round/roundStep)*500;
+
+        if(targetMilliSecond<1000){
+            targetMilliSecond=1000;
+        }
+
         gameMilliSecond = gameMilliSecond + 10;
         if (gameMilliSecond > targetMilliSecond) {
             gameMilliSecond = targetMilliSecond;
@@ -368,6 +409,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int ms = (targetMilliSecond - gameMilliSecond) % 1000;
         String timer = String.format("%d:%03d", sec, ms);
         countText.setText(timer);
+        //gameTimer.post(this);
         gameTimer.postDelayed(this, 10);
 
     }
