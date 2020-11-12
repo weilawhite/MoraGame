@@ -1,11 +1,17 @@
 package com.example.moragame;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int colorRandom = 1;
     private int round = 1;
     private int combo = 0, hitCombo = 0;
+    private SoundPool soundPool;
+    private int[] soundResId;
+    private final int SOUND_CORRECT = 0;
+    private final int SOUND_WRONG = 1;
 
     boolean gameOver = false;
     boolean gaming = false;
@@ -38,6 +48,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int targetMilliSecond;
     boolean gameCountDownFinish;
     Handler gameTimer;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void initSound(){
+        soundPool=new SoundPool.Builder().setMaxStreams(10).build();
+        soundResId=new int[]{soundPool.load(this,R.raw.correct_ogg,1),soundPool.load(this,R.raw.wrong,1)};
+    }
+
+    public void playSound(int id){
+        soundPool.play(soundResId[id],1,1,1,0,1);
+    }
 
     private void findView() {
         startBtn = findViewById(R.id.start_btn);
@@ -73,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         findView();
         init();
+        initSound();
     }
 
     public void onAction(GameState gameState) {
@@ -118,6 +139,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "PLAYER_ROUND");
                 startGameCountDown();
                 break;
+
+            case GAME_OVER:
+                StringBuilder sb = new StringBuilder();
+                sb.append("SCORE:" + player.getWinCount()).append("HIT COMBO:" + hitCombo);
+                gaming = false;
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                alertDialog.setTitle(R.string.result);
+                alertDialog.setMessage(sb.toString());
+                alertDialog.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+                break;
             case CHECK_WIN_STATE:
                 Log.d(TAG, "Stage " + stageCount);
                 Log.d(TAG, WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()).toString());
@@ -125,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (WinState.getWinState(player.getMora(), computer.getMora(), computer.getRule()) == WinState.COMPUTER_WIN) {
                     Log.d(TAG, "LOSE LIFE:" + player.getLife() + "->" + (player.getLife() - 1));
 
+                    playSound(SOUND_WRONG);
                     player.setLife(player.getLife() - 1);
                     //String life = String.format("HP:%d", player.getLife());
                     lifeText.setText(String.format("HP:%d", player.getLife()));
@@ -135,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 } else {
                     Log.d(TAG, "WIN");
+                    playSound(SOUND_CORRECT);
+
                     stageCount++;
                     player.setWinCount(player.getWinCount() + 1);
                     winCountText.setText(String.valueOf(player.getWinCount()));
@@ -171,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     gaming = false;
                     gameCountDownFinish = true;
                     ruleText.setText("遊戲結束");
-                    gameState = GameState.INIT_GAME;
+                    gameState = GameState.GAME_OVER;
+                    onAction(GameState.GAME_OVER);
 
                     //onAction(GameState.INIT_GAME);
                 } else {
@@ -179,6 +219,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            showExitDialog();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        alertDialog.setTitle(R.string.exit);
+        alertDialog.setMessage(R.string.exit);
+        alertDialog.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity.this.finish();
+                dialog.dismiss();
+            }
+        }).setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+            }
+        }).create().show();
+
     }
 
     private void startGameCountDown() {

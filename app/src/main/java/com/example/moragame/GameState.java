@@ -6,4 +6,5 @@ public enum GameState {
     COMPUTER_ROUND,
     PLAYER_ROUND,
     CHECK_WIN_STATE,
+    GAME_OVER;
 }
