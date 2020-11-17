@@ -1,5 +1,6 @@
 package com.example.moragame;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -43,26 +46,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int[] soundResId;
     private final int SOUND_CORRECT = 0;
     private final int SOUND_WRONG = 1;
-    int topHitCombo=0;
-    private int minMilliSecond=1500;
+    int topHitCombo = 0;
+    private int minMilliSecond = 1500;
 
     boolean gameOver = false;
     boolean gaming = false;
     private int gameMilliSecond;
-    private int beginMilliSecond=3000;
-    private int roundStep=2;
+    private int beginMilliSecond = 3000;
+    private int roundStep = 2;
     private int targetMilliSecond;
+    private boolean soundOn;
     boolean gameCountDownFinish;
     Handler gameTimer;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initSound() {
+        soundOn = true;
         soundPool = new SoundPool.Builder().setMaxStreams(10).build();
         soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1)};
     }
 
     public void playSound(int id) {
-        soundPool.play(soundResId[id], 1, 1, 1, 0, 1);
+        if (soundOn) {
+            soundPool.play(soundResId[id], 1, 1, 1, 0, 1);
+        }
     }
 
     private void findView() {
@@ -152,11 +159,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 StringBuilder sb = new StringBuilder();
 
                 //待修改
-                sb.append("總分:" + player.getWinCount()).append("\n歷史最高連擊:"+topHitCombo);
+                sb.append("總分:" + player.getWinCount()).append("\n歷史最高連擊:" + topHitCombo);
                 //sb.append("總分:" + player.getWinCount()).append("\n最高連擊數:" + hitCombo).append("\n歷史最高連擊:"+topHitCombo);
                 gaming = false;
-                if(hitCombo>topHitCombo){
-                    topHitCombo=hitCombo;
+                if (hitCombo > topHitCombo) {
+                    topHitCombo = hitCombo;
                     save();
                 }
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -217,7 +224,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (combo > hitCombo) {
                         hitCombo = combo;
                         //save();
-                        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));}
+                        hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
+                    }
 
                 }
 
@@ -247,17 +255,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.sound_switch:
+                soundOn = !soundOn;
+                if (soundOn) {
+                    item.setTitle(R.string.sound_off);
+                } else {
+                    item.setTitle(R.string.sound_on);
+                }
+                break;
+            case R.id.about:
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.about))
+                        .setMessage(getResources().getString(R.string.app_name) + "\n V1.0")
+                        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+                break;
+
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void save() {
         SharedPreferences sharedPreferences = getSharedPreferences("Game", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("Combo",topHitCombo);
+        editor.putInt("Combo", topHitCombo);
         editor.commit();
     }
 
-    public void load(){
-        SharedPreferences sharedPreferences=getSharedPreferences("Game",Context.MODE_PRIVATE);
-        topHitCombo=sharedPreferences.getInt("Combo",0);
-        hitCombo=topHitCombo;
+    public void load() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Game", Context.MODE_PRIVATE);
+        topHitCombo = sharedPreferences.getInt("Combo", 0);
+        hitCombo = topHitCombo;
     }
 
     @Override
@@ -324,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gameMilliSecond = 0;
         gameCountDownFinish = false;
 
-        this.setTitle(getResources().getString(R.string.app_name)+" 本關限時 "+targetMilliSecond+" 毫秒");
+        this.setTitle(getResources().getString(R.string.app_name) + " 本關限時 " + targetMilliSecond + " 毫秒");
 
         roundText.setText("ROUND: " + round++);
 
@@ -403,10 +452,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
  */
-        targetMilliSecond=beginMilliSecond-(round/roundStep)*500;
+        targetMilliSecond = beginMilliSecond - (round / roundStep) * 500;
 
-        if(targetMilliSecond<minMilliSecond){
-            targetMilliSecond=minMilliSecond;
+        if (targetMilliSecond < minMilliSecond) {
+            targetMilliSecond = minMilliSecond;
         }
 
         gameMilliSecond = gameMilliSecond + 10;
