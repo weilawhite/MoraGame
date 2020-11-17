@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int SOUND_CORRECT = 0;
     private final int SOUND_WRONG = 1;
     int topHitCombo=0;
+    private int minMilliSecond=1500;
 
     boolean gameOver = false;
     boolean gaming = false;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rockBtn.setOnClickListener(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +150,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case GAME_OVER:
                 StringBuilder sb = new StringBuilder();
-                sb.append("SCORE:" + player.getWinCount()).append("\nHIT COMBO:" + hitCombo);
+
+                //待修改
+                sb.append("總分:" + player.getWinCount()).append("\n歷史最高連擊:"+topHitCombo);
+                //sb.append("總分:" + player.getWinCount()).append("\n最高連擊數:" + hitCombo).append("\n歷史最高連擊:"+topHitCombo);
                 gaming = false;
                 if(hitCombo>topHitCombo){
                     topHitCombo=hitCombo;
@@ -221,6 +226,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     gaming = false;
                     gameCountDownFinish = true;
                     ruleText.setText("遊戲結束");
+
+                    //
+                    //這段有問題
+                    //
+
                     if (combo > hitCombo) {
                         hitCombo = combo;
                         save();
@@ -303,15 +313,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         round = 1;
         combo = 0;
         player.setLife(player.getINIT_LIFE());
+        this.setTitle("猜拳反應遊戲");
+        ruleText.setText("我是規則");
+        heartText.setText(player.getLifeString());
+        countText.setText(" ");
     }
 
     private void startGame() {
 
         gameMilliSecond = 0;
-        //targetMilliSecond = 1500;
         gameCountDownFinish = false;
 
-        this.setTitle(getResources().getString(R.string.app_name)+" > "+targetMilliSecond);
+        this.setTitle(getResources().getString(R.string.app_name)+" 本關限時 "+targetMilliSecond+" 毫秒");
 
         roundText.setText("ROUND: " + round++);
 
@@ -392,8 +405,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
  */
         targetMilliSecond=beginMilliSecond-(round/roundStep)*500;
 
-        if(targetMilliSecond<1000){
-            targetMilliSecond=1000;
+        if(targetMilliSecond<minMilliSecond){
+            targetMilliSecond=minMilliSecond;
         }
 
         gameMilliSecond = gameMilliSecond + 10;
