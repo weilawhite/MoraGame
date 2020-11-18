@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startBtn, quitBtn;
     private ImageButton scissorBtn, paperBtn, rockBtn;
     private ImageView comImg;
-    protected TextView ruleText, countText, lifeText, stageText, heartText, winCountText, bigCounterText, hitCountText, roundText, hitCombotext;
+    protected TextView scoreText, ruleText, countText, lifeText, stageText, heartText, winCountText, bigCounterText, hitCountText, roundText, hitCombotext;
     private final String TAG = "MainActivity";
     Player player;
     Computer computer;
@@ -41,19 +41,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int stageCount = 1, countSecond = 0;
     private int colorRandom = 1;
     private int round = 1;
+    int score;
+    int lifeBonusTimes, lifeBonus = 1000;//加命次數 加命門檻
     private int combo = 0, hitCombo = 0;
     private SoundPool soundPool;
     private int[] soundResId;
     private final int SOUND_CORRECT = 0;
     private final int SOUND_WRONG = 1;
-    int topHitCombo = 0;
-    private int minMilliSecond = 1500;
+    int getTopHitComboThisGame = 0;
+    int topHitCombo = 0; //會被存取
 
+    boolean easyMode = false;
     boolean gameOver = false;
     boolean gaming = false;
     private int gameMilliSecond;
-    private int beginMilliSecond = 3000;
-    private int roundStep = 2;
+    private int minMilliSecond = 2000;  //最低時間
+    private int beginMilliSecond = 4000;  //初始時間
+    private int roundStep = 10; //每幾關加速一次
     private int targetMilliSecond;
     private boolean soundOn;
     boolean gameCountDownFinish;
@@ -62,8 +66,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initSound() {
         soundOn = true;
-        soundPool = new SoundPool.Builder().setMaxStreams(10).build();
-        soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1)};
+        soundPool = new SoundPool.Builder().setMaxStreams(15).build();
+        soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1),
+                soundPool.load(this, R.raw.r1, 1), soundPool.load(this, R.raw.r2, 1), soundPool.load(this, R.raw.r3, 1),
+                soundPool.load(this, R.raw.r4, 1), soundPool.load(this, R.raw.r5, 1), soundPool.load(this, R.raw.r6, 1),
+                soundPool.load(this, R.raw.r7, 1), soundPool.load(this, R.raw.r8, 1),
+        };
     }
 
     public void playSound(int id) {
@@ -73,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void findView() {
+        scoreText = findViewById(R.id.score_text);
         startBtn = findViewById(R.id.start_btn);
         quitBtn = findViewById(R.id.quit_btn);
         scissorBtn = findViewById(R.id.scissors_ibn);
@@ -148,7 +157,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case COMPUTER_ROUND:
                 Log.d(TAG, "COMPUTER_ROUND");
-                computer.AI();
+                if (easyMode) {
+                    computer.easyAI();
+                } else {
+                    computer.AI();
+                }
                 break;
             case PLAYER_ROUND:
                 Log.d(TAG, "PLAYER_ROUND");
@@ -158,14 +171,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case GAME_OVER:
                 StringBuilder sb = new StringBuilder();
 
-                //待修改
-                sb.append("總分:" + player.getWinCount()).append("\n歷史最高連擊:" + topHitCombo);
-                //sb.append("總分:" + player.getWinCount()).append("\n最高連擊數:" + hitCombo).append("\n歷史最高連擊:"+topHitCombo);
+
                 gaming = false;
                 if (hitCombo > topHitCombo) {
                     topHitCombo = hitCombo;
                     save();
                 }
+                //待修改
+                sb.append("這次挑戰到第" + player.getWinCount()).append("關\n歷史最高連擊:" + topHitCombo).append("\n總分:" + score);
+                //sb.append("總分:" + player.getWinCount()).append("\n最高連擊數:" + hitCombo).append("\n歷史最高連擊:"+topHitCombo);
+
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                 alertDialog.setTitle(R.string.result);
                 alertDialog.setMessage(sb.toString());
@@ -185,9 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     playSound(SOUND_WRONG);
                     player.setLife(player.getLife() - 1);
-                    //String life = String.format("HP:%d", player.getLife());
+
                     lifeText.setText(String.format("HP:%d", player.getLife()));
-                    //String heart = player.getLifeString();
+
                     heartText.setText(player.getLifeString());
                     combo = 0;
 
@@ -204,11 +219,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     hitCountText.setVisibility(View.VISIBLE);
                     hitCountText.setText(combo + "連擊!");
 
+                    scoreCompute();
+
+
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                Thread.sleep(800);
+                                Thread.sleep(1200);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -223,7 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     if (combo > hitCombo) {
                         hitCombo = combo;
-                        //save();
                         hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
                     }
 
@@ -235,24 +252,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     gameCountDownFinish = true;
                     ruleText.setText("遊戲結束");
 
-                    //
-                    //這段有問題
-                    //
-
-                    if (combo > hitCombo) {
-                        hitCombo = combo;
+                    if (hitCombo > topHitCombo) {
+                        topHitCombo = hitCombo;
                         save();
-                        //hitCombotext.setText(String.format("hit combo:\n %02d", hitCombo));
                     }
                     gameState = GameState.GAME_OVER;
                     onAction(GameState.GAME_OVER);
 
-                    //onAction(GameState.INIT_GAME);
                 } else {
                     onAction(GameState.START_GAME);
                 }
                 break;
         }
+    }
+
+    private void scoreCompute() {
+        int scoreAdd;
+        scoreAdd = 5 + (int) Math.sqrt(combo * stageCount / 2);
+        if (easyMode) {
+            scoreAdd = scoreAdd / 3;
+        }
+        score = score + scoreAdd;
+        scoreText.setText(String.valueOf(score));
+
+        while ((score / 1000) > lifeBonusTimes) {
+            player.setLife(player.getLife() + 1);
+            lifeBonusTimes++;
+        }
+
+        heartText.setText(player.getLifeString());
+
     }
 
     @Override
@@ -278,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.about:
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.about))
-                        .setMessage(getResources().getString(R.string.app_name) + "\n V1.0")
+                        .setMessage(getResources().getString(R.string.app_name) + "\n V1.1\n 如果你覺得難度太高，是有簡單模式的哦")
                         .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -288,11 +317,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .create()
                         .show();
                 break;
-
-
+            case R.id.easy_mode:
+                easyMode = !easyMode;
+                if (easyMode) {
+                    item.setTitle(R.string.normal_mode);
+                } else {
+                    item.setTitle(R.string.easy_mode);
+                }
+                break;
+            case R.id.how_to_play:
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.how_to_play))
+                        .setMessage("依照的規則與電腦出拳，判斷你該出什麼。\n" +
+                                "例：規則是「請讓我輸」，電腦出「布」，則你該出「剪刀」才是正確的。\n" +
+                                "出錯或時間內未出拳會扣生命\n\n" + //無法再多抓一個變數了???
+                                "初始思考秒數為" + beginMilliSecond + "毫秒\n每過" + roundStep + "關會縮短500毫秒\n" +
+                                "最低不會低於" + minMilliSecond + "毫秒\n" +
+                                "每獲得1000分會增加一點生命\n" +
+                                "簡單模式下獲得的分數只有三分之一 ")
+                        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+                break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -304,9 +356,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void load() {
+
+        //不應該自動把之前最高紀錄 當作本場最高紀錄
+
         SharedPreferences sharedPreferences = getSharedPreferences("Game", Context.MODE_PRIVATE);
         topHitCombo = sharedPreferences.getInt("Combo", 0);
         hitCombo = topHitCombo;
+        //hitCombotext.setText(String.valueOf(topHitCombo));
+        //讀取之後 在開始遊戲就秀出之前最高紀錄
     }
 
     @Override
@@ -342,6 +399,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startGameCountDown() {
         comImg.setImageResource(Mora.getMoraResId(computer.getMora()));
         setRuleText();
+        int sound = computer.getRule().ordinal() + 2;
+        playSound(sound);
         gameCountDownFinish = false;
         gameMilliSecond = 0;
 
@@ -354,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+        score = 0;
+        scoreText.setText("0");
         player = new Player();
         computer = new Computer(this);
         gameState = GameState.INIT_GAME;
@@ -361,11 +422,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         countSecond = 3;
         round = 1;
         combo = 0;
+        lifeBonus = 0;
+        targetMilliSecond = beginMilliSecond;
         player.setLife(player.getINIT_LIFE());
         this.setTitle("猜拳反應遊戲");
         ruleText.setText("我是規則");
         heartText.setText(player.getLifeString());
         countText.setText(" ");
+        winCountText.setText("00");
+        roundText.setText(getResources().getString(R.string.round));
     }
 
     private void startGame() {
@@ -389,6 +454,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         gaming = true;
         if (gaming) {
+
+/*
+            ruleText.setVisibility(View.INVISIBLE);
+            comImg.setVisibility(View.INVISIBLE);*/
             onAction(GameState.COMPUTER_ROUND);
         } else {
             Log.d(TAG, "NO");
@@ -506,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         colorRandom++;
-        switch (colorRandom % 3) {
+        switch (colorRandom % 6) {
             case 0:
                 ruleText.setTextColor(getResources().getColor(R.color.colorDarkRed));
                 break;
@@ -515,6 +584,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case 2:
                 ruleText.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                break;
+            case 3:
+                ruleText.setTextColor(getResources().getColor(R.color.colorBlack));
+                break;
+            case 4:
+                ruleText.setTextColor(getResources().getColor(R.color.colorBrown));
+                break;
+            case 5:
+                ruleText.setTextColor(getResources().getColor(R.color.colorBlue2));
                 break;
         }
     }

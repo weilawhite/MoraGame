@@ -27,5 +27,8 @@
     <string name="sound_off">靜音</string>
     <string name="about">關於</string>
     <string name="imrule">我是規則</string>
+    <string name="easy_mode">簡單模式</string>
+    <string name="normal_mode">普通模式</string>
+    <string name="how_to_play">這要怎麼玩?</string>
 
 </resources>

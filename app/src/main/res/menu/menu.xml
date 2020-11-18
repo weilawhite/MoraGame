@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item
-    android:title="@string/sound_on"
-    android:id="@+id/sound_switch"></item>
+    <item
+        android:id="@+id/sound_switch"
+        android:title="@string/sound_on"></item>
+    <item
+        android:id="@+id/easy_mode"
+        android:title="@string/easy_mode"></item>
+    <item
+        android:id="@+id/how_to_play"
+        android:title="@string/how_to_play"></item>
     <item
         android:id="@+id/about"
         android:title="@string/about"></item>
+
 </menu>

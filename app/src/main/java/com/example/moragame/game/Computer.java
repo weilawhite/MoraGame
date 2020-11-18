@@ -1,5 +1,6 @@
 package com.example.moragame.game;
 
+import android.media.SoundPool;
 import android.util.Log;
 
 import com.example.moragame.GameState;
@@ -10,7 +11,6 @@ import java.util.Random;
 public class Computer extends Player {
     Rule rule;
     OnActionListener listener;
-
     public Computer(OnActionListener listener) {
         this.listener = listener;
     }
@@ -29,16 +29,32 @@ public class Computer extends Player {
 
     public void AI() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         setMora(getRandomMora());
+
         setRule(getRandomRule());
-        Log.d("MainActivity","AI");
+        Log.d("MainActivity", "AI");
 
         listener.onAction(GameState.PLAYER_ROUND);
     }
+
+    public void easyAI() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setMora(getRandomMora());
+
+        setRule(getRandomRule(1));
+        Log.d("MainActivity", "easyAI");
+
+        listener.onAction(GameState.PLAYER_ROUND);
+    }
+
 
     public static Mora getRandomMora() {
         int index = new Random().nextInt(Mora.PAPER.ordinal() + 1);
@@ -81,8 +97,40 @@ public class Computer extends Player {
             return Rule.NOT_LOSE;
         }
 
-
         return null;
     }
 
+    public static Rule getRandomRule(int i) {
+
+
+        //i不可以超過7
+
+        int index = new Random().nextInt(i + 1);
+
+        if (index == 0) {
+            return Rule.P_WIN;
+        }
+        if (index == 1) {
+            return Rule.P_LOSE;
+        }
+        if (index == 2) {
+            return Rule.C_WIN;
+        }
+        if (index == 3) {
+            return Rule.C_LOSE;
+        }
+        if (index == 4) {
+            return Rule.EVEN;
+        }
+        if (index == 5) {
+            return Rule.NOT_EVEN;
+        }
+        if (index == 6) {
+            return Rule.NOT_WIN;
+        }
+        if (index == 7) {
+            return Rule.NOT_LOSE;
+        }
+        return null;
+    }
 }
