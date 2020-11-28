@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean gameOver = false;
     boolean gaming = false;
     private int gameMilliSecond;
-    private int minMilliSecond = 2000;  //最低時間
-    private int beginMilliSecond = 4000;  //初始時間
+    private int minMilliSecond = 1500;  //最低時間
+    private int beginMilliSecond = 3000;  //初始時間
     private int roundStep = 10; //每幾關加速一次
     private int targetMilliSecond;
     private boolean soundOn;
