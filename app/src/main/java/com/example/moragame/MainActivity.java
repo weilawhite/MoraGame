@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int[] soundResId;
     private final int SOUND_CORRECT = 0;
     private final int SOUND_WRONG = 1;
+    private final int LIFE_ADD = 10;
     int getTopHitComboThisGame = 0;
     int topHitCombo = 0; //會被存取
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int minMilliSecond = 1500;  //最低時間
     private int beginMilliSecond = 3000;  //初始時間
     private int roundStep = 10; //每幾關加速一次
+    private int scoreRate = 1; //分數倍率
     private int targetMilliSecond;
     private boolean soundOn;
     boolean gameCountDownFinish;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1),
                 soundPool.load(this, R.raw.r1, 1), soundPool.load(this, R.raw.r2, 1), soundPool.load(this, R.raw.r3, 1),
                 soundPool.load(this, R.raw.r4, 1), soundPool.load(this, R.raw.r5, 1), soundPool.load(this, R.raw.r6, 1),
-                soundPool.load(this, R.raw.r7, 1), soundPool.load(this, R.raw.r8, 1),
+                soundPool.load(this, R.raw.r7, 1), soundPool.load(this, R.raw.r8, 1),soundPool.load(this,R.raw.life_add,1)
         };
     }
 
@@ -107,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scissorBtn.setOnClickListener(this);
         paperBtn.setOnClickListener(this);
         rockBtn.setOnClickListener(this);
+
+        getDifficultParameter();
+    }
+
+    private void getDifficultParameter() {
+        Bundle bundle = getIntent().getExtras();
+        scoreRate = bundle.getInt("scoreRate");
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -209,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 } else {
                     Log.d(TAG, "WIN");
-                    playSound(SOUND_CORRECT);
+
 
                     stageCount++;
                     player.setWinCount(player.getWinCount() + 1);
@@ -219,8 +229,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     hitCountText.setVisibility(View.VISIBLE);
                     hitCountText.setText(combo + "連擊!");
 
-                    scoreCompute();
-
+                    Boolean lifeAdd = false;
+                    lifeAdd = scoreCompute();
+                    if (lifeAdd) {
+                        playSound(LIFE_ADD);
+                    } else {
+                        playSound(SOUND_CORRECT);
+                    }
 
                     new Thread(new Runnable() {
                         @Override
@@ -266,9 +281,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void scoreCompute() {
-        int scoreAdd;
+    private boolean scoreCompute() {
+        int scoreAdd=0;
+        boolean lifeAdd = false;
         scoreAdd = 5 + (int) Math.sqrt(combo * stageCount / 2);
+        scoreAdd = scoreAdd * scoreRate;
         if (easyMode) {
             scoreAdd = scoreAdd / 3;
         }
@@ -278,9 +295,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         while ((score / 1000) > lifeBonusTimes) {
             player.setLife(player.getLife() + 1);
             lifeBonusTimes++;
+            lifeAdd = true;
         }
 
         heartText.setText(player.getLifeString());
+        return lifeAdd;
 
     }
 
@@ -418,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+        lifeBonusTimes=0;
         score = 0;
         scoreText.setText("0");
         player = new Player();

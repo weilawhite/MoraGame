@@ -28,7 +28,7 @@
     <string name="about">關於</string>
     <string name="imrule">我是規則</string>
     <string name="easy_mode">簡單模式</string>
-    <string name="normal_mode">普通模式</string>
+
     <string name="how_to_play">這要怎麼玩?</string>
     <string name="title_activity_title">Title</string>
     <!-- Strings used for fragments for navigation -->
@@ -40,5 +40,9 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="return_to_title">是否回到主畫面？</string>
+    <string name="exit_game">離開遊戲</string>
+    <string name="hard_mode">困難模式</string>
+    <string name="normal_mode">普通模式</string>
+    <string name="demo_mode">展示模式</string>
 
 </resources>
