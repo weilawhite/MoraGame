@@ -369,6 +369,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if (gaming == true) {
+                return false;
+            }
+
             showExitDialog();
             return true;
         }
@@ -378,8 +383,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showExitDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-        alertDialog.setTitle(R.string.exit);
-        alertDialog.setMessage(R.string.exit);
+        alertDialog.setTitle(R.string.return_to_title);
+        //alertDialog.setMessage(R.string.return_to_title);
         alertDialog.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -497,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.quit_btn:
-                if (gameOver = true) {
+                if (gameOver = true && gaming == false) {
                     Log.d(TAG, getResources().getString(R.string.quit));
                     showExitDialog();
                 }

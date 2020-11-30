@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Title2">
+    <ImageView
+        android:id="@+id/title_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/title" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:columnCount="4"
+        android:rowCount="1">
+
+        <Button
+            android:id="@+id/easy_mode"
+            android:layout_width="wrap_content"
+            android:text="簡單模式"
+            android:visibility="invisible">
+
+        </Button>
+
+        <Button
+            android:id="@+id/normal_mode"
+            android:text="普通模式"></Button>
+
+        <Button
+            android:id="@+id/hard_mode"
+            android:text="困難模式"
+            android:visibility="invisible"></Button>
+
+        <Button
+
+            android:id="@+id/exit"
+            android:text="離開遊戲"></Button>
+    </GridLayout>
+</FrameLayout>
