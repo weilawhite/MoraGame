@@ -23,7 +23,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.moragame.game.About;
 import com.example.moragame.game.Computer;
+import com.example.moragame.game.HowToPlay;
 import com.example.moragame.game.Mora;
 import com.example.moragame.game.Player;
 import com.example.moragame.game.Rule;
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         soundResId = new int[]{soundPool.load(this, R.raw.correct_ogg, 1), soundPool.load(this, R.raw.wrong, 1),
                 soundPool.load(this, R.raw.r1, 1), soundPool.load(this, R.raw.r2, 1), soundPool.load(this, R.raw.r3, 1),
                 soundPool.load(this, R.raw.r4, 1), soundPool.load(this, R.raw.r5, 1), soundPool.load(this, R.raw.r6, 1),
-                soundPool.load(this, R.raw.r7, 1), soundPool.load(this, R.raw.r8, 1),soundPool.load(this,R.raw.life_add,1)
+                soundPool.load(this, R.raw.r7, 1), soundPool.load(this, R.raw.r8, 1), soundPool.load(this, R.raw.life_add, 1)
         };
     }
 
@@ -90,10 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         paperBtn = findViewById(R.id.paper_ibn);
         rockBtn = findViewById(R.id.rock_ibn);
         comImg = findViewById(R.id.computer_img);
-        lifeText = findViewById(R.id.life_text);
         ruleText = findViewById(R.id.rule_text);
         countText = findViewById(R.id.count_text);
-        stageText = findViewById(R.id.stage_text);
         heartText = findViewById(R.id.heart_text);
         winCountText = findViewById(R.id.win_count_text);
         roundText = findViewById(R.id.round_text);
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     playSound(SOUND_WRONG);
                     player.setLife(player.getLife() - 1);
 
-                    lifeText.setText(String.format("HP:%d", player.getLife()));
+                    //lifeText.setText(String.format("HP:%d", player.getLife()));
 
                     heartText.setText(player.getLifeString());
                     combo = 0;
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     stageCount++;
                     player.setWinCount(player.getWinCount() + 1);
                     winCountText.setText(String.valueOf(player.getWinCount()));
-                    stageText.setText(String.valueOf(stageCount));
+                    //stageText.setText(String.valueOf(stageCount));
                     combo++;
                     hitCountText.setVisibility(View.VISIBLE);
                     hitCountText.setText(combo + "連擊!");
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private boolean scoreCompute() {
-        int scoreAdd=0;
+        int scoreAdd = 0;
         boolean lifeAdd = false;
         scoreAdd = 5 + (int) Math.sqrt(combo * stageCount / 2);
         scoreAdd = scoreAdd * scoreRate;
@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
@@ -325,16 +326,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.about:
                 new AlertDialog.Builder(this)
-                        .setTitle(getResources().getString(R.string.about))
-                        .setMessage(getResources().getString(R.string.app_name) + "\n V1.1\n 如果你覺得難度太高，是有簡單模式的哦")
+                        .setTitle(getResources().getString(R.string.about) + " " + getResources().getString(R.string.app_name))
+                        .setMessage(new About().getContent())
                         .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        })
-                        .create()
-                        .show();
+                        }).create().show();
                 break;
             case R.id.easy_mode:
                 easyMode = !easyMode;
@@ -347,13 +346,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.how_to_play:
                 new AlertDialog.Builder(this)
                         .setTitle(getResources().getString(R.string.how_to_play))
-                        .setMessage("依照的規則與電腦出拳，判斷你該出什麼。\n" +
-                                "例：規則是「請讓我輸」，電腦出「布」，則你該出「剪刀」才是正確的。\n" +
-                                "出錯或時間內未出拳會扣生命\n\n" + //無法再多抓一個變數了???
-                                "初始思考秒數為" + beginMilliSecond + "毫秒\n每過" + roundStep + "關會縮短500毫秒\n" +
-                                "最低不會低於" + minMilliSecond + "毫秒\n" +
-                                "每獲得1000分會增加一點生命\n" +
-                                "簡單模式下獲得的分數只有三分之一 ")
+                        .setMessage(new HowToPlay(beginMilliSecond, roundStep, minMilliSecond).getContent())
                         .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -375,9 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void load() {
-
         //不應該自動把之前最高紀錄 當作本場最高紀錄
-
         SharedPreferences sharedPreferences = getSharedPreferences("Game", Context.MODE_PRIVATE);
         topHitCombo = sharedPreferences.getInt("Combo", 0);
         hitCombo = topHitCombo;
@@ -437,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        lifeBonusTimes=0;
+        lifeBonusTimes = 0;
         score = 0;
         scoreText.setText("0");
         player = new Player();
@@ -467,15 +458,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         roundText.setText("ROUND: " + round++);
 
-        stageText.setText(String.valueOf(stageCount));
+        //stageText.setText(String.valueOf(stageCount));
         winCountText.setText(String.valueOf(player.getWinCount()));
 
         //新的愛心血量
         heartText.setText(player.getLifeString());
 
         //舊的文字血量
-        String life = String.format("HP:%d", player.getLife());
-        lifeText.setText(life);
+        //String life = String.format("HP:%d", player.getLife());
+        //lifeText.setText(life);
 
         gaming = true;
         if (gaming) {
@@ -537,15 +528,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, "T");
             return;
         }
-/*
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-
- */
         targetMilliSecond = beginMilliSecond - (round / roundStep) * 500;
 
         if (targetMilliSecond < minMilliSecond) {

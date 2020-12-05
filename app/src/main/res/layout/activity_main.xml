@@ -203,22 +203,8 @@
             android:layout_height="wrap_content"
             android:textSize="40dp"
             android:text="@string/imrule" />
-        <TextView
-            android:id="@+id/life_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:textSize="40dp"
-            android:text="HP:  "
-            android:visibility="invisible"/>
-        <TextView
-            android:id="@+id/stage_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:textSize="40dp"
-            android:text="0"
-            android:visibility="invisible"/>
+
+
 
         <TextView
             android:id="@+id/big_counter_text"
