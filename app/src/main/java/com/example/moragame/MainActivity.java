@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             targetMilliSecond = minMilliSecond;
         }
 
-        gameMilliSecond = gameMilliSecond + 10;
+        gameMilliSecond = gameMilliSecond + 100;
         if (gameMilliSecond > targetMilliSecond) {
             gameMilliSecond = targetMilliSecond;
             gameCountDownFinish = true;
@@ -546,10 +546,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int sec = (targetMilliSecond - gameMilliSecond) / 1000;
         int ms = (targetMilliSecond - gameMilliSecond) % 1000;
-        String timer = String.format("%d:%03d", sec, ms);
+        String timer = String.format("%d:%d", sec, ms/100);
         countText.setText(timer);
         //gameTimer.post(this);
-        gameTimer.postDelayed(this, 10);
+        gameTimer.postDelayed(this, 100);
 
     }
 
