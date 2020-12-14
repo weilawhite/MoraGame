@@ -293,7 +293,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scoreText.setText(String.valueOf(score));
 
         while ((score / 1000) > lifeBonusTimes) {
-            player.setLife(player.getLife() + 1);
+            if (player.getLife() <= 8) {
+                player.setLife(player.getLife() + 1);
+            }
             lifeBonusTimes++;
             lifeAdd = true;
         }
@@ -441,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lifeBonus = 0;
         targetMilliSecond = beginMilliSecond;
         player.setLife(player.getINIT_LIFE());
-        this.setTitle("猜拳反應遊戲");
+        this.setTitle(R.string.app_name);
         ruleText.setText("我是規則");
         heartText.setText(player.getLifeString());
         countText.setText(" ");
@@ -458,15 +460,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         roundText.setText("ROUND: " + round++);
 
-        //stageText.setText(String.valueOf(stageCount));
         winCountText.setText(String.valueOf(player.getWinCount()));
 
         //新的愛心血量
         heartText.setText(player.getLifeString());
 
-        //舊的文字血量
-        //String life = String.format("HP:%d", player.getLife());
-        //lifeText.setText(life);
 
         gaming = true;
         if (gaming) {
@@ -546,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int sec = (targetMilliSecond - gameMilliSecond) / 1000;
         int ms = (targetMilliSecond - gameMilliSecond) % 1000;
-        String timer = String.format("%d:%d", sec, ms/100);
+        String timer = String.format("%d:%d", sec, ms / 100);
         countText.setText(timer);
         //gameTimer.post(this);
         gameTimer.postDelayed(this, 100);
