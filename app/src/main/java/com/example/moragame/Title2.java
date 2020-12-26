@@ -6,13 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public class Title2 extends AppCompatActivity  {
+import com.example.moragame.game.About;
+import com.example.moragame.game.HowToPlay;
+import com.example.moragame.game.RuleList;
 
-    Button normalModeBtn,easyModeBtn, exitBtn,demoBtn;
+public class Title2 extends AppCompatActivity {
+
+    Button normalModeBtn, easyModeBtn, hardModeBtn, howToPlayBtn, exitBtn, demoBtn, aboutBtn,ruleBtn;
+    ImageView titleImage;
+    TextView titleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,13 +29,13 @@ public class Title2 extends AppCompatActivity  {
         setContentView(R.layout.activity_title2);
         findView();
         Intent intent = new Intent(this, MainActivity.class);
-        Bundle bundle=new Bundle();
+        Bundle bundle = new Bundle();
 
         demoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bundle.putInt("mode",5);
-                bundle.putInt("scoreRate",30);
+                bundle.putInt("mode", 5);
+                bundle.putInt("scoreRate", 30);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -35,7 +44,7 @@ public class Title2 extends AppCompatActivity  {
         normalModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bundle.putInt("mode",2);
+                bundle.putInt("mode", 2);
                 //bundle.putInt("scoreRate",1);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -46,10 +55,30 @@ public class Title2 extends AppCompatActivity  {
         easyModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bundle.putInt("mode",1);
+                bundle.putInt("mode", 1);
                 //bundle.putInt("scoreRate",1);
                 intent.putExtras(bundle);
                 startActivity(intent);
+            }
+        });
+
+        hardModeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bundle.putInt("mode", 3);
+                //bundle.putInt("scoreRate",1);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        aboutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = new About().getContent();
+                titleImage.setAlpha(0.1f);
+                //titleImage.setVisibility(View.INVISIBLE);
+                titleText.setText(text);
             }
         });
 
@@ -60,13 +89,40 @@ public class Title2 extends AppCompatActivity  {
             }
         });
 
+        ruleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = new RuleList().getContent();
+                titleImage.setAlpha(0.1f);
+                //titleImage.setVisibility(View.INVISIBLE);
+                titleText.setText(text);
+            }
+        });
+
+        howToPlayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = new HowToPlay().getContent();
+                titleImage.setAlpha(0.1f);
+                //titleImage.setVisibility(View.INVISIBLE);
+                titleText.setText(text);
+            }
+        });
+
     }
 
     private void findView() {
+        howToPlayBtn = findViewById(R.id.HowToPlay_button);
+        hardModeBtn = findViewById(R.id.hard_mode);
         normalModeBtn = findViewById(R.id.normal_mode);
-        easyModeBtn=findViewById(R.id.easy_mode);
+        easyModeBtn = findViewById(R.id.easy_mode);
         exitBtn = findViewById(R.id.exit);
-        demoBtn=findViewById(R.id.demo);
+        demoBtn = findViewById(R.id.demo);
+        aboutBtn = findViewById(R.id.about_button);
+        ruleBtn=findViewById(R.id.rule_button);
+        titleImage = findViewById(R.id.title_image);
+        titleText = findViewById(R.id.title_text);
+        titleText.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

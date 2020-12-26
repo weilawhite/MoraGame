@@ -1,57 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Title2">
-    <ImageView
-        android:id="@+id/title_image"
-        android:layout_width="wrap_content"
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/title" />
+        android:layout_weight="1">
+
+        <TextView
+
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:textSize="@dimen/midden_font_size"
+            android:text="" />
+
+        <ImageView
+            android:id="@+id/title_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/title" />
+    </FrameLayout>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_weight="0"
         android:columnCount="4"
-        android:rowCount="2"
-        android:padding="3dp">
+        android:padding="3dp"
+        android:rowCount="2">
 
         <Button
-            android:layout_row="0"
-            android:layout_column="0"
             android:id="@+id/easy_mode"
             android:layout_width="wrap_content"
-            android:text="慢速模式"
-            >
+            android:layout_row="0"
+            android:layout_column="0"
+            android:text="@string/slow_mode">
 
         </Button>
 
         <Button
+            android:id="@+id/normal_mode"
             android:layout_row="0"
             android:layout_column="1"
-            android:id="@+id/normal_mode"
             android:text="@string/normal_mode"></Button>
 
         <Button
+            android:id="@+id/hard_mode"
             android:layout_row="0"
             android:layout_column="2"
-            android:id="@+id/hard_mode"
-            android:text="@string/hard_mode"
-            android:visibility="invisible"></Button>
+            android:text="@string/fast_mode"
+            android:visibility="visible"></Button>
 
         <Button
-            android:layout_row="1"
-            android:layout_column="0"
             android:id="@+id/demo"
+            android:layout_row="0"
+            android:layout_column="3"
             android:text="@string/demo_mode"></Button>
 
         <Button
+            android:id="@+id/exit"
             android:layout_row="1"
             android:layout_column="3"
-            android:id="@+id/exit"
             android:text="@string/exit_game"></Button>
+        <Button
+            android:id="@+id/about_button"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="關於" />
+        <Button
+            android:id="@+id/rule_button"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="規則一覽" />
+        <Button
+            android:id="@+id/HowToPlay_button"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="玩法" />
     </GridLayout>
-</FrameLayout>
+
+
+</LinearLayout>

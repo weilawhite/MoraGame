@@ -44,5 +44,7 @@
     <string name="hard_mode">困難模式</string>
     <string name="normal_mode">普通模式</string>
     <string name="demo_mode">展示模式</string>
+    <string name="slow_mode">慢速模式</string>
+    <string name="fast_mode">高速模式</string>
 
 </resources>

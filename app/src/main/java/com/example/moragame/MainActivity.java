@@ -117,14 +117,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = getIntent().getExtras();
         int mode = bundle.getInt("mode");
         switch (mode) {
-            case 1:
+            case 1: //慢速
                 scoreRate = 1;
-                beginMilliSecond=10000;
+                beginMilliSecond = 10000;
                 break;
-            case 2:
+            case 2: //普通
                 scoreRate = 1;
                 break;
-            case 5:
+            case 3: //高速 2倍分
+                minMilliSecond = 1000;  //最低時間
+                beginMilliSecond = 2500;  //初始時間
+                scoreRate = 2;
+                break;
+            case 5: //展示 10倍分
                 scoreRate = bundle.getInt("scoreRate");
                 break;
         }
