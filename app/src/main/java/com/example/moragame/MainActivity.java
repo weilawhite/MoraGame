@@ -115,7 +115,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getDifficultParameter() {
         Bundle bundle = getIntent().getExtras();
-        scoreRate = bundle.getInt("scoreRate");
+        int mode = bundle.getInt("mode");
+        switch (mode) {
+            case 1:
+                scoreRate = 1;
+                beginMilliSecond=10000;
+                break;
+            case 2:
+                scoreRate = 1;
+                break;
+            case 5:
+                scoreRate = bundle.getInt("scoreRate");
+                break;
+        }
+
 
     }
 

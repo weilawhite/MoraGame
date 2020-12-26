@@ -24,8 +24,8 @@
             android:layout_column="0"
             android:id="@+id/easy_mode"
             android:layout_width="wrap_content"
-            android:text="簡單模式"
-            android:visibility="invisible">
+            android:text="慢速模式"
+            >
 
         </Button>
 

@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class Title2 extends AppCompatActivity  {
 
-    Button normalMode, exitBtn,demoBtn;
+    Button normalModeBtn,easyModeBtn, exitBtn,demoBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +25,31 @@ public class Title2 extends AppCompatActivity  {
         demoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bundle.putInt("mode",5);
                 bundle.putInt("scoreRate",30);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
 
-        normalMode.setOnClickListener(new View.OnClickListener() {
+        normalModeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bundle.putInt("scoreRate",1);
+                bundle.putInt("mode",2);
+                //bundle.putInt("scoreRate",1);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
+            }
+        });
+
+        easyModeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bundle.putInt("mode",1);
+                //bundle.putInt("scoreRate",1);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -51,7 +63,8 @@ public class Title2 extends AppCompatActivity  {
     }
 
     private void findView() {
-        normalMode = findViewById(R.id.normal_mode);
+        normalModeBtn = findViewById(R.id.normal_mode);
+        easyModeBtn=findViewById(R.id.easy_mode);
         exitBtn = findViewById(R.id.exit);
         demoBtn=findViewById(R.id.demo);
     }
