@@ -9,7 +9,8 @@ public class About {
 
     public String getContent() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("v1.1 - 11/18\n" +
+        stringBuilder.append
+                ("v1.1 - 11/18\n" +
                 "規則有語音說明（可開關）\n" +
                 "新增選單功能，會提示規則\n" +
                 "新增簡單模式，只會有兩種規則\n" +
@@ -33,7 +34,9 @@ public class About {
         ).append("v1.3 - 12/26\n" +
                 "把1.0版移除的難度選項加回\n" +
                 "主畫面增加三個說明按鈕\n"
-        );
+        ).append("v1.31 - 1/7\n" +
+                "修正遊戲選單、計時、結算文本\n" +
+                "首頁選單切換時會自動捲回頂部");
         return stringBuilder.toString();
     }
 }

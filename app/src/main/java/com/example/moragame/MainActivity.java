@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     save();
                 }
                 //待修改
-                sb.append("這次挑戰到第" + player.getWinCount()).append("關\n歷史最高連擊:" + topHitCombo).append("\n總分:" + score);
+                sb.append("這次挑戰到第" + (round - 1) + "關\n答對次數:" + player.getWinCount()).append("\n歷史最高連擊:" + topHitCombo).append("\n總分:" + score);
                 //sb.append("總分:" + player.getWinCount()).append("\n最高連擊數:" + hitCombo).append("\n歷史最高連擊:"+topHitCombo);
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -562,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int sec = (targetMilliSecond - gameMilliSecond) / 1000;
         int ms = (targetMilliSecond - gameMilliSecond) % 1000;
-        String timer = String.format("%d:%d", sec, ms / 100);
+        String timer = String.format("%d.%d / %d.%d", sec, ms / 100, targetMilliSecond / 1000, targetMilliSecond % 1000 / 100);
         countText.setText(timer);
         //gameTimer.post(this);
         gameTimer.postDelayed(this, 100);

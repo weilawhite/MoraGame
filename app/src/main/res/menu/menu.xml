@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sound_switch"
-        android:title="@string/sound_on"></item>
+        android:title="@string/sound_off"></item>
     <item
         android:id="@+id/easy_mode"
         android:title="@string/easy_mode"></item>

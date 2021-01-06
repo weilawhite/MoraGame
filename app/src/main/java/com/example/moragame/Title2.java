@@ -79,6 +79,7 @@ public class Title2 extends AppCompatActivity {
                 titleImage.setAlpha(0.1f);
                 //titleImage.setVisibility(View.INVISIBLE);
                 titleText.setText(text);
+                titleText.scrollTo(0,0);
             }
         });
 
@@ -96,6 +97,7 @@ public class Title2 extends AppCompatActivity {
                 titleImage.setAlpha(0.1f);
                 //titleImage.setVisibility(View.INVISIBLE);
                 titleText.setText(text);
+                titleText.scrollTo(0,0);
             }
         });
 
@@ -106,6 +108,7 @@ public class Title2 extends AppCompatActivity {
                 titleImage.setAlpha(0.1f);
                 //titleImage.setVisibility(View.INVISIBLE);
                 titleText.setText(text);
+                titleText.scrollTo(0,0);
             }
         });
 
